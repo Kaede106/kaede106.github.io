@@ -11,11 +11,18 @@
       let
         pkgs = import nixpkgs {
           inherit system;
+          overlays = [ (import rust-overlay) ];
+        };
+
+        rustToolchain = pkgs.rust-bin.stable.latest.default.override {
+          targets = [ "wasm32-unknown-unknown" ];
+          extensions = [ "rustfmt" ];
         };
       in
       {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
+            rustToolchain
             cargo
             rustfmt
             cargo-leptos
