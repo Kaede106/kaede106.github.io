@@ -22,16 +22,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: wasm32-unknown-unknown  
-
       - name: Install Nix
         uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
+
+      - name: Verify Rust toolchain
+        run: |
+          nix develop --command rustc --version
+          nix develop --command rustc --print target-libdir --target wasm32-unknown-unknown
 
       - name: Build with Trunk
         run: nix develop --command trunk build --release --public-url /
