@@ -1,50 +1,42 @@
-name: Deploy Leptos Website
+name: Leptos Full-Stack CI
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
+    - name: Setup Rust Toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: nightly # cargo-leptos often works best with nightly for macro/compiled performance
+        targets: wasm32-unknown-unknown
 
-      - name: Build with Trunk
-        run: nix develop --command trunk build --release --public-url /
+    - name: Install cargo-leptos
+      run: cargo install --locked cargo-leptos
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
+    - name: Cargo Cache
+      uses: swatinem/rust-cache@v2
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
+    - name: Format Check
+      run: cargo fmt --all -- --check
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    - name: Lint with Clippy
+      run: cargo clippy --all-targets --all-features -- -D warnings
 
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - name: Run Tests
+      run: cargo test --all-features
+
+    - name: Build Production Artifacts
+      run: cargo leptos build --release
