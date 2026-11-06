@@ -1,0 +1,74 @@
+* {
+    box-sizing: border-box;
+}
+:root {
+    --mantle: #292c3c;
+    --base: #303446;
+    --lavender: #babbf1;
+    --text: #c6d0f5;
+    --pink: #f4b8e4;
+    --crust: #232634;
+}
+
+html, body {
+    background-color: var(--crust);
+    width: 100%;
+    margin: 0px;
+    min-height: 100%;
+    font-family: "Open Sans";
+    font-size: 16px;
+}
+body {
+    display: block;
+}
+main {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--crust);
+}
+
+.kaede106 { 
+    color: var(--pink);
+    font-size: 4rem;
+    padding-bottom: 2px;
+    padding-top: 8px;
+}
+
+.info { 
+    color: var(--text);
+    font-size: 2.3rem;
+}
+
+.container {
+    flex-direction: column;
+    padding-left: 4%;
+    width: 100%;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    gap: 16px;
+    padding: 0;
+    margin: 16px 0;
+}
+
+.links_link {
+    left-margin: 5px;
+    font-size: 1.3rem;
+}
+
+.links_link a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.links_link a:hover {
+    color: var(--pink);
+}
+
+.links_link a:visited {
+    color: var(--lavender);
+}
