@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+    };
   };
 
   outputs = { self, nixpkgs, flake-utils, rust-overlay }:
@@ -23,11 +27,6 @@
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             rustToolchain
-            cargo
-            rustfmt
-            cargo-leptos
-            pkg-config
-            openssl
             binaryen
             wasm-bindgen-cli
             nodejs
@@ -35,12 +34,6 @@
             trunk
             lld
           ];
-
-          env = {
-            PKG_CONFIG_PATH =
-              "${pkgs.openssl.dev}/lib/pkgconfig";
-          };
         };
       });
 }
-
